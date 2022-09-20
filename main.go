@@ -74,8 +74,17 @@ func popItem(db *sql.DB, itemId int) {
 
 }
 
-func main() {
+func createTable(db *sql.DB) {
+	_, err := db.Exec("CREATE TABLE IF NOT EXISTS todo (item text, time datetime);")
 
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Creating new todo instance.")
+}
+
+func initDB() *sql.DB {
 	db, err := sql.Open("sqlite3", "./todo.db")
 
 	db.SetMaxOpenConns(1)
@@ -84,11 +93,20 @@ func main() {
 		panic(err)
 	}
 
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS todo (item text, time datetime);")
+	return db
+}
 
-	if err != nil {
-		panic(err)
-	}
+func main() {
+
+	db := initDB()
+
+	//db, err := sql.Open("sqlite3", "./todo.db")
+
+	//db.SetMaxOpenConns(1)
+
+	//if err != nil {
+	//	panic(err)
+	//}
 
 	args := os.Args[1:]
 
